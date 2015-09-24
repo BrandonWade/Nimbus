@@ -71,6 +71,7 @@ function processWeatherData(weatherDataObject) {
     }
 
     console.log(weeklyData);
+    outputForecast(weeklyData);
 }
 
 function compareDates(firstDate, secondDate) {
@@ -81,4 +82,15 @@ function compareDates(firstDate, secondDate) {
 
 function roundToNearestMultiple(value, multiple) {
     return multiple * (Math.round(value / multiple));
+}
+
+function outputForecast(weeklyData) {
+    var forecastList = $("#forecastList");
+
+    for (var i = 0; i < weeklyData.length; i++) {
+
+        forecastList.append("<li><div>" + weeklyData[i][0] + "</div><div>" + weeklyData[i][1] + "</div></li>");
+    }
+
+    $("#forecastListContainer").append(forecastList);
 }

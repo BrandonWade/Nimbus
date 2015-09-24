@@ -1,1 +1,1 @@
-body{padding:50px;font:14px "Lucida Grande",Helvetica,Arial,sans-serif}a{color:#00B7FF}
+body{padding:50px;font:14px "Lucida Grande",Helvetica,Arial,sans-serif}a{color:#00B7FF}ul#forecastList{margin:0;padding:0}ul#forecastList li{display:inline-block;width:100px;min-height:100px;background:#ccc;vertical-align:middle;border:1px solid black}ul#forecastList li div{text-align:center;border:1px solid black}
