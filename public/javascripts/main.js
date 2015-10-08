@@ -53,7 +53,7 @@ function processWeatherData(weatherDataObject) {
             var skyConditions = getSkyConditions(weatherDataArray[i]);
             weekday = WEEKDAY_NAMES[date.getDay()];
             conditionText = skyConditions.description;
-            conditionIcon = skyConditions.icon;
+            conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
             maxTemperature = Math.max(...temperatureArray);
             minTemperature = Math.min(...temperatureArray);
 
@@ -122,7 +122,11 @@ function outputForecast(weeklyData) {
     var forecastList = $("#forecastList");
 
     for (var i = 0; i < weeklyData.length; i++) {
-        forecastList.append("<li><div>" + weeklyData[i].weekday + "</div><div>" + weeklyData[i].conditionText + "</div><div>" + weeklyData[i].maxTemperature + "</div><div>" + weeklyData[i].minTemperature + "</div>" + "</li>");
+        forecastList.append("<li><div>" + weeklyData[i].weekday +
+                            "</div><div>" + weeklyData[i].conditionText +
+                            "</div><div>" + weeklyData[i].maxTemperature +
+                            "</div><div>" + weeklyData[i].minTemperature +
+                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\">" + "</div></li>");
     }
 
     $("#forecastListContainer").append(forecastList);
