@@ -15,7 +15,7 @@ function processCoordinates(position) {
     var container = $("#container");
     var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=ff86e164b9a0a0af7127d1329a7b149b";
 
-    // Retrieve the weather data
+    // Retrieve the weather data for the week
     $.ajax({
         type: "GET",
         url: requestUrl,
@@ -23,7 +23,7 @@ function processCoordinates(position) {
         crossDomain: true,
         success: function(data) {
             console.log(data);
-            processWeatherData(data);
+            processWeatherData(data, position);
         },
         failure: function(XMLHttpRequest, textStatus, errorThrown) {
             container.append("Request for weather data failed.");
@@ -31,7 +31,7 @@ function processCoordinates(position) {
     });
 }
 
-function processWeatherData(weatherDataObject) {
+function processWeatherData(weatherDataObject, position) {
     var WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var weatherDataArray = weatherDataObject.list;
     var weeklyData = [];
@@ -39,6 +39,8 @@ function processWeatherData(weatherDataObject) {
     var weekday = "";
     var conditionText = "";
     var conditionIcon = "";
+    var maxTemperature = 0;
+    var minTemperature = 0;
 
     console.log(weatherDataArray);
 
@@ -52,12 +54,22 @@ function processWeatherData(weatherDataObject) {
         maxTemperature = Math.round(rawDailyData.temp.max);
         minTemperature = Math.round(rawDailyData.temp.min);
 
-        var formattedDailyData = {weekday: weekday, conditionText: conditionText, conditionIcon: conditionIcon, maxTemperature: maxTemperature, minTemperature: minTemperature};
+        var formattedDailyData = { weekday: weekday,
+                                   conditionText: conditionText,
+                                   conditionIcon: conditionIcon,
+                                   maxTemperature: maxTemperature,
+                                   minTemperature: minTemperature };
+
         weeklyData.push(formattedDailyData);
     }
 
-    console.log(weeklyData);
-    outputForecast(weeklyData);
+    var currentTempRequest = getCurrentTemperatureRequest(position);
+    $.when(currentTempRequest).done(function() {
+        weeklyData[0].currentTemp = Math.round(currentTempRequest.responseJSON.main.temp);
+
+        console.log(weeklyData);
+        outputForecast(weeklyData);
+    });
 }
 
 function getSkyConditions(weatherData) {
@@ -86,7 +98,7 @@ function getSkyConditions(weatherData) {
             // Atmosphere
             break;
         case "8" : // Code is in 8XX range
-            skyConditions = {description: "Clouds", icon: "03d.png"};
+            skyConditions = {description: "Cloudy", icon: "03d.png"};
             break;
         case "9" : // Code is in 9XX range
             // Other / Extreme
@@ -99,22 +111,38 @@ function getSkyConditions(weatherData) {
     return skyConditions;
 }
 
+function getCurrentTemperatureRequest(position) {
+    var requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&APPID=ff86e164b9a0a0af7127d1329a7b149b";
+
+    // Retrieve a promise that will contain data about the current weather
+    return $.ajax({
+        type: "GET",
+        url: requestUrl,
+        cache: false,
+        crossDomain: true,
+        success: function(data) {
+            //console.log(data);
+        },
+        failure: function(XMLHttpRequest, textStatus, errorThrown) {
+            container.append("Request for current weather data failed.");
+        }
+    });
+}
+
 function outputForecast(weeklyData) {
     var forecastList = $("#forecastList");
 
     var currentTemp = $("#currentTemp");
     var currentCondition = $("#currentCondition");
 
-    // TODO: Replace maxTemperature with current temp (need to swap when formatting data)
-    currentTemp.append("<div>" + weeklyData[0].maxTemperature + "</div>");
+    currentTemp.append("<div>" + weeklyData[0].currentTemp + "&deg; </div>");
     currentCondition.append("<div>" + weeklyData[0].conditionText + "</div>");
 
     for (var i = 1; i < weeklyData.length; i++) {
         forecastList.append("<li><div>" + weeklyData[i].weekday +
-                            "</div><div>" + weeklyData[i].conditionText +
-                            "</div><div>" + weeklyData[i].maxTemperature +
-                            "</div><div>" + weeklyData[i].minTemperature +
-                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\">" + "</div></li>");
+                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\">" +
+                            "</div><div>" + weeklyData[i].maxTemperature + "&deg;" +
+                            "</div><div>" + weeklyData[i].minTemperature + "&deg; </div></li>");
     }
 
     $("#forecastListContainer").append(forecastList);
