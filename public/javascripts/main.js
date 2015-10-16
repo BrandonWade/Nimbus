@@ -53,7 +53,6 @@ function processCoordinates(position) {
         cache: false,
         crossDomain: true,
         success: function(data) {
-            console.log(data);
             processWeatherData(data, position);
         },
         failure: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -73,7 +72,8 @@ function processWeatherData(weatherDataObject, position) {
     var maxTemperature = 0;
     var minTemperature = 0;
 
-    console.log(weatherDataArray);
+    // View the raw weather data
+    //console.log(weatherDataArray);
 
     for (var i = 0; i < weatherDataArray.length; i++) {
         var rawDailyData = weatherDataArray[i];
@@ -150,13 +150,7 @@ function getCurrentTemperatureRequest(position) {
         type: "GET",
         url: requestUrl,
         cache: false,
-        crossDomain: true,
-        success: function(data) {
-            //console.log(data);
-        },
-        failure: function(XMLHttpRequest, textStatus, errorThrown) {
-            container.append("Request for current weather data failed.");
-        }
+        crossDomain: true
     });
 }
 
@@ -173,7 +167,7 @@ function outputForecast(weeklyData) {
         forecastList.append("<li><div>" + weeklyData[i].weekday +
                             "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\">" +
                             "</div><div>" + weeklyData[i].maxTemperature + "&deg;" +
-                            "</div><div>" + weeklyData[i].minTemperature + "&deg; </div></li>");
+                                " / " + weeklyData[i].minTemperature + "&deg; </div></li>");
     }
 
     $("#forecastListContainer").append(forecastList);
