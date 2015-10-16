@@ -1,5 +1,5 @@
 /**
- * Created by Brandon W on 2015-09-16.
+ * Logic to retrieve and display weather forecast information based on the user's location.
  */
 function getUserCoordinates() {
     var container = $("#container");
@@ -13,9 +13,11 @@ function getUserCoordinates() {
 
 function processCoordinates(position) {
     var container = $("#container");
-    var requestUrl = "http://api.openweathermap.org/data/2.5/forecast?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric";
+    var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=ff86e164b9a0a0af7127d1329a7b149b";
 
     container.append(requestUrl);
+
+    // Retrieve the weather data
     $.ajax({
         type: "GET",
         url: requestUrl,
@@ -26,7 +28,7 @@ function processCoordinates(position) {
             processWeatherData(data);
         },
         failure: function(XMLHttpRequest, textStatus, errorThrown) {
-            container.append("FAILED");
+            container.append("Request for weather data failed.");
         }
     });
 }
@@ -34,49 +36,30 @@ function processCoordinates(position) {
 function processWeatherData(weatherDataObject) {
     var WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var weatherDataArray = weatherDataObject.list;
-    var temperatureArray = [];
     var weeklyData = [];
-    var date = new Date(weatherDataArray[0].dt * 1000);
-    var newDate = null;
+    var date = null;
     var weekday = "";
     var conditionText = "";
     var conditionIcon = "";
-    var maxTemperature = 0;
-    var minTemperature = 0;
+
+    console.log(weatherDataArray);
 
     for (var i = 0; i < weatherDataArray.length; i++) {
-        newDate = new Date(weatherDataArray[i].dt * 1000);
+        var rawDailyData = weatherDataArray[i];
+        var skyConditions = getSkyConditions(weatherDataArray[i]);
+        date = new Date(rawDailyData.dt * 1000);
+        weekday = WEEKDAY_NAMES[date.getDay()];
+        conditionText = skyConditions.description;
+        conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
+        maxTemperature = rawDailyData.temp.max;
+        minTemperature = rawDailyData.temp.min;
 
-        if (compareDates(date, newDate)) {
-            temperatureArray.push(Math.round(weatherDataArray[i].main.temp_max));
-        } else {
-            var skyConditions = getSkyConditions(weatherDataArray[i]);
-            weekday = WEEKDAY_NAMES[date.getDay()];
-            conditionText = skyConditions.description;
-            conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
-            maxTemperature = Math.max(...temperatureArray);
-            minTemperature = Math.min(...temperatureArray);
-
-            var dailyData = {weekday: weekday, conditionText: conditionText, conditionIcon: conditionIcon, maxTemperature: maxTemperature, minTemperature: minTemperature};
-            weeklyData.push(dailyData);
-
-            temperatureArray = [];
-            date = newDate;
-        }
+        var formattedDailyData = {weekday: weekday, conditionText: conditionText, conditionIcon: conditionIcon, maxTemperature: maxTemperature, minTemperature: minTemperature};
+        weeklyData.push(formattedDailyData);
     }
 
     console.log(weeklyData);
     outputForecast(weeklyData);
-}
-
-function compareDates(firstDate, secondDate) {
-    return(firstDate.getFullYear() == secondDate.getFullYear()) &&
-          (firstDate.getMonth() == secondDate.getMonth()) &&
-          (firstDate.getDate() == secondDate.getDate());
-}
-
-function roundToNearestMultiple(value, multiple) {
-    return multiple * (Math.round(value / multiple));
 }
 
 function getSkyConditions(weatherData) {
