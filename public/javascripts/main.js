@@ -1,19 +1,50 @@
 /**
  * Logic to retrieve and display weather forecast information based on the user's location.
  */
-function getUserCoordinates() {
-    var container = $("#container");
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(processCoordinates);
-    } else {
-        container.append("Your browser does not support geolocation. We were unable to retrieve your position.");
+var API_KEY = null;
+
+function getUserCoordinates() {
+    var apiKeyRequest = getApiKeyRequest();
+
+    $.when(apiKeyRequest).done(function() {
+        // Read the api key from a conf file
+        API_KEY = getApiKey(apiKeyRequest.responseText);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(processCoordinates);
+        } else {
+            var container = $("#container");
+            container.append("Your browser does not support geolocation. We were unable to retrieve your position.");
+        }
+    });
+}
+
+// Read in the conf file that contains the api key
+function getApiKeyRequest() {
+    return $.get("key.conf");
+}
+
+// Parse the pairs in the conf file until the api key is found
+function getApiKey(confStrings) {
+    var tokens = confStrings.split("\n");
+    var apiKey = null;
+    var currentPair = null;
+
+    for (var i = 0; i < tokens.length && apiKey == null; i++) {
+        currentPair = tokens[i].split("=");
+
+        if (currentPair.length == 2 && currentPair[0] == "api_key") {
+            apiKey = currentPair[1];
+        }
     }
+
+    return apiKey;
 }
 
 function processCoordinates(position) {
     var container = $("#container");
-    var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=ff86e164b9a0a0af7127d1329a7b149b";
+    var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=" + API_KEY;
 
     // Retrieve the weather data for the week
     $.ajax({
@@ -112,7 +143,7 @@ function getSkyConditions(weatherData) {
 }
 
 function getCurrentTemperatureRequest(position) {
-    var requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&APPID=ff86e164b9a0a0af7127d1329a7b149b";
+    var requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&APPID=" + API_KEY;
 
     // Retrieve a promise that will contain data about the current weather
     return $.ajax({
