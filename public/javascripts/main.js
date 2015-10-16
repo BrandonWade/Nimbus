@@ -15,8 +15,6 @@ function processCoordinates(position) {
     var container = $("#container");
     var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=ff86e164b9a0a0af7127d1329a7b149b";
 
-    container.append(requestUrl);
-
     // Retrieve the weather data
     $.ajax({
         type: "GET",
@@ -51,8 +49,8 @@ function processWeatherData(weatherDataObject) {
         weekday = WEEKDAY_NAMES[date.getDay()];
         conditionText = skyConditions.description;
         conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
-        maxTemperature = rawDailyData.temp.max;
-        minTemperature = rawDailyData.temp.min;
+        maxTemperature = Math.round(rawDailyData.temp.max);
+        minTemperature = Math.round(rawDailyData.temp.min);
 
         var formattedDailyData = {weekday: weekday, conditionText: conditionText, conditionIcon: conditionIcon, maxTemperature: maxTemperature, minTemperature: minTemperature};
         weeklyData.push(formattedDailyData);
@@ -104,7 +102,14 @@ function getSkyConditions(weatherData) {
 function outputForecast(weeklyData) {
     var forecastList = $("#forecastList");
 
-    for (var i = 0; i < weeklyData.length; i++) {
+    var currentTemp = $("#currentTemp");
+    var currentCondition = $("#currentCondition");
+
+    // TODO: Replace maxTemperature with current temp (need to swap when formatting data)
+    currentTemp.append("<div>" + weeklyData[0].maxTemperature + "</div>");
+    currentCondition.append("<div>" + weeklyData[0].conditionText + "</div>");
+
+    for (var i = 1; i < weeklyData.length; i++) {
         forecastList.append("<li><div>" + weeklyData[i].weekday +
                             "</div><div>" + weeklyData[i].conditionText +
                             "</div><div>" + weeklyData[i].maxTemperature +
