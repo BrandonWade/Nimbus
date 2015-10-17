@@ -81,7 +81,8 @@ function processWeatherData(weatherDataObject, position) {
         date = new Date(rawDailyData.dt * 1000);
         weekday = WEEKDAY_NAMES[date.getDay()];
         conditionText = skyConditions.description;
-        conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
+        //conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
+        conditionIcon = "/images/" + skyConditions.icon;
         maxTemperature = Math.round(rawDailyData.temp.max);
         minTemperature = Math.round(rawDailyData.temp.min);
 
@@ -114,22 +115,22 @@ function getSkyConditions(weatherData) {
 
     switch (weatherCodePrefix) {
         case "2" : // Code is in 2XX range
-            skyConditions = {description: "Thunderstorm", icon: "11d.png"};
+            skyConditions = {description: "Thunderstorm", icon: "thunderstorm.png"};
             break;
         case "3" : // Code is in 3XX range
-            skyConditions = {description: "Drizzle", icon: "09d.png"};
+            skyConditions = {description: "Drizzle", icon: "rain.png"};
             break;
         case "5" : // Code is in 5XX range
-            skyConditions = {description: "Rain", icon: "10d.png"};
+            skyConditions = {description: "Rain", icon: "rain.png"};
             break;
         case "6" : // Code is in 6XX range
-            skyConditions = {description: "Snow", icon: "13d.png"};
+            skyConditions = {description: "Snow", icon: "snow.png"};
             break;
         case "7" : // Code is in 7XX range
             // Atmosphere
             break;
         case "8" : // Code is in 8XX range
-            skyConditions = {description: "Cloudy", icon: "03d.png"};
+            skyConditions = {description: "Cloudy", icon: "cloudy.png"};
             break;
         case "9" : // Code is in 9XX range
             // Other / Extreme
