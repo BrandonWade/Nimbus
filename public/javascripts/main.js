@@ -161,14 +161,14 @@ function outputForecast(weeklyData) {
     var currentTemp = $("#currentTemp");
     var currentCondition = $("#currentCondition");
 
-    currentTemp.append("<div>" + weeklyData[0].currentTemp + "&deg; </div>");
+    currentTemp.append("<div>" + weeklyData[0].currentTemp + "&deg;</div>");
     currentCondition.append("<div>" + weeklyData[0].conditionText + "</div>");
 
     for (var i = 1; i < weeklyData.length; i++) {
         forecastList.append("<li><div>" + weeklyData[i].weekday +
-                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\">" +
+                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\" title=\"" + weeklyData[i].conditionText + "\">" +
                             "</div><div>" + weeklyData[i].maxTemperature + "&deg;" +
-                                " / " + weeklyData[i].minTemperature + "&deg; </div></li>");
+                                " / " + weeklyData[i].minTemperature + "&deg;</div></li>");
     }
 
     $("#forecastListContainer").append(forecastList);
