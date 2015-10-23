@@ -69,6 +69,7 @@ function processWeatherData(weatherDataObject, position) {
     var weekday = "";
     var conditionText = "";
     var conditionIcon = "";
+    var background = null;
     var maxTemperature = 0;
     var minTemperature = 0;
 
@@ -81,14 +82,15 @@ function processWeatherData(weatherDataObject, position) {
         date = new Date(rawDailyData.dt * 1000);
         weekday = WEEKDAY_NAMES[date.getDay()];
         conditionText = skyConditions.description;
-        //conditionIcon = "http://openweathermap.org/img/w/" + skyConditions.icon;
         conditionIcon = "/images/" + skyConditions.icon;
+        background = skyConditions.background;
         maxTemperature = Math.round(rawDailyData.temp.max);
         minTemperature = Math.round(rawDailyData.temp.min);
 
         var formattedDailyData = { weekday: weekday,
                                    conditionText: conditionText,
                                    conditionIcon: conditionIcon,
+                                   background: background,
                                    maxTemperature: maxTemperature,
                                    minTemperature: minTemperature };
 
@@ -107,6 +109,7 @@ function processWeatherData(weatherDataObject, position) {
 function getSkyConditions(weatherData) {
     var weatherCode = String(weatherData.weather[0].id);
     var weatherCodePrefix = "";
+    var background = null;
     var skyConditions = null;
 
     if (weatherCode.length > 0) {
@@ -115,22 +118,32 @@ function getSkyConditions(weatherData) {
 
     switch (weatherCodePrefix) {
         case "2" : // Code is in 2XX range
-            skyConditions = {description: "Thunderstorm", icon: "thunderstorm.png"};
+            background = ["b5bdc8", "828c95", "28343b"];
+            skyConditions = {description: "Thunderstorm", icon: "thunderstorm.png", background: background};
             break;
         case "3" : // Code is in 3XX range
-            skyConditions = {description: "Drizzle", icon: "rain.png"};
+            background = ["93cede", "75bdd1", "49a5bf"];
+            skyConditions = {description: "Drizzle", icon: "rain.png", background: background};
             break;
         case "5" : // Code is in 5XX range
-            skyConditions = {description: "Rain", icon: "rain.png"};
+            background = ["3e8ebc", "0082aa", "4462a3"];
+            skyConditions = {description: "Rain", icon: "rain.png", background: background};
             break;
         case "6" : // Code is in 6XX range
-            skyConditions = {description: "Snow", icon: "snow.png"};
+            background = ["deefff", "98bede"];
+            skyConditions = {description: "Snow", icon: "snow.png", background: background};
             break;
         case "7" : // Code is in 7XX range
             // Atmosphere
             break;
         case "8" : // Code is in 8XX range
-            skyConditions = {description: "Cloudy", icon: "cloudy.png"};
+            if (weatherCode == "800") {
+                background = ["87e0fd", "53cbf1", "05abe0"];
+                skyConditions = {description: "Clear Skies", icon: "sunny.png", background: background}
+            } else {
+                background = ["cedce7", "596a72"];
+                skyConditions = {description: "Cloudy", icon: "cloudy.png", background: background};
+            }
             break;
         case "9" : // Code is in 9XX range
             // Other / Extreme
@@ -161,6 +174,12 @@ function outputForecast(weeklyData) {
     var currentTemp = $("#currentTemp");
     var currentCondition = $("#currentCondition");
 
+    $(document.body).css({
+        'background' : buildGradientString(weeklyData[0].background),
+        'background-repeat' : 'no-repeat',
+        'background-attachment' : 'fixed'
+    });
+
     currentTemp.append("<div>" + weeklyData[0].currentTemp + "&deg;</div>");
     currentCondition.append("<div>" + weeklyData[0].conditionText + "</div>");
 
@@ -172,4 +191,16 @@ function outputForecast(weeklyData) {
     }
 
     $("#forecastListContainer").append(forecastList);
+}
+
+function buildGradientString(hexValues) {
+    var gradientString = 'linear-gradient(to bottom, ';
+
+    if (hexValues.length == 2) {
+        gradientString += '#' + hexValues[0] + ' 0%, #' + hexValues[1] + ' 100%)';
+    } else {
+        gradientString += '#' + hexValues[0] + ' 0%, #' + hexValues[1] + ' 40%, #' + hexValues[2] + ' 100%)';
+    }
+
+    return gradientString;
 }
