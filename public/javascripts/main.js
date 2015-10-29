@@ -118,19 +118,19 @@ function getSkyConditions(weatherData) {
 
     switch (weatherCodePrefix) {
         case "2" : // Code is in 2XX range
-            background = ["b5bdc8", "828c95", "28343b"];
+            background = [["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"]];
             skyConditions = {description: "Thunderstorm", icon: "thunderstorm.png", background: background};
             break;
         case "3" : // Code is in 3XX range
-            background = ["93cede", "75bdd1", "49a5bf"];
+            background = [["#93cede", "0%"], ["#75bdd1", "41%"], ["#49a5bf", "100%"]];
             skyConditions = {description: "Drizzle", icon: "rain.png", background: background};
             break;
         case "5" : // Code is in 5XX range
-            background = ["3e8ebc", "0082aa", "4462a3"];
+            background = [["#3e8ebc", "0%"], ["#0082aa", "25%"], ["#5562a3", "90%"]];
             skyConditions = {description: "Rain", icon: "rain.png", background: background};
             break;
         case "6" : // Code is in 6XX range
-            background = ["deefff", "98bede"];
+            background = [["#a3e6ff", "0%"], ["#afe5ff", "30%"], ["#d7d7d7", "125%"]];
             skyConditions = {description: "Snow", icon: "snow.png", background: background};
             break;
         case "7" : // Code is in 7XX range
@@ -138,10 +138,10 @@ function getSkyConditions(weatherData) {
             break;
         case "8" : // Code is in 8XX range
             if (weatherCode == "800") {
-                background = ["87e0fd", "53cbf1", "05abe0"];
-                skyConditions = {description: "Clear Skies", icon: "sunny.png", background: background}
+                background = [["#87e0fd", "0%"], ["#53cbf1", "40%"], ["#05abe0", "100%"]];
+                skyConditions = {description: "Clear Skies", icon: "clear_day.png", background: background}
             } else {
-                background = ["cedce7", "596a72"];
+                background = [["#ddddf5", "0%"], ["#999999", "60%"], ["#596a70", "100%"]];
                 skyConditions = {description: "Cloudy", icon: "cloudy.png", background: background};
             }
             break;
@@ -191,16 +191,19 @@ function outputForecast(weeklyData) {
     }
 
     $("#forecastListContainer").append(forecastList);
+    $("#weatherContainer").fadeIn(300);
 }
 
 function buildGradientString(hexValues) {
-    var gradientString = 'linear-gradient(to bottom, ';
+    var gradientString = "";
 
-    if (hexValues.length == 2) {
-        gradientString += '#' + hexValues[0] + ' 0%, #' + hexValues[1] + ' 100%)';
-    } else {
-        gradientString += '#' + hexValues[0] + ' 0%, #' + hexValues[1] + ' 40%, #' + hexValues[2] + ' 100%)';
+    for (var i = 0; i < hexValues.length; i++) {
+        gradientString += hexValues[i][0] + ' ' + hexValues[i][1];
+
+        if (i < hexValues.length - 1) {
+            gradientString += ', ';
+        }
     }
 
-    return gradientString;
+    return 'linear-gradient(to bottom, ' + gradientString + ')';
 }
