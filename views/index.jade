@@ -7,7 +7,21 @@ block content
             getUserCoordinates();
 
         div#weatherContainer
-            div#currentTemp
-            div#currentCondition
+            div#configContainer
+                div#configDropdown
+                    div#configButton
+                        img(src='/images/config.png')
+                    ul#configMenu
+                        li
+                            a(href='#') Item 1
+                        li
+                            a(href='#') Item 2
+                        li
+                            a(href='#') Item 3
+                        li
+                            a(href='#') Item 4
+            div#currentInfoContainer
+                div#currentTemp
+                div#currentCondition
             div#forecastListContainer
                 ul#forecastList

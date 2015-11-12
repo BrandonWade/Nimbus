@@ -11,11 +11,19 @@ function getUserCoordinates() {
         // Read the api key from a conf file
         API_KEY = getApiKey(apiKeyRequest.responseText);
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(processCoordinates);
+        if ((localStorage.getItem("latitude") === null) || (localStorage.getItem("longitude") === null)) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(processCoordinates);
+            } else {
+                var container = $("#container");
+                container.append("Your browser does not support geolocation. We were unable to retrieve your position.");
+            }
         } else {
-            var container = $("#container");
-            container.append("Your browser does not support geolocation. We were unable to retrieve your position.");
+            var latitude = localStorage.getItem("latitude");
+            var longitude = localStorage.getItem("longitude");
+            var position = { coords: { latitude: latitude, longitude: longitude } };
+
+            processCoordinates(position);
         }
     });
 }
@@ -43,6 +51,11 @@ function getApiKey(confStrings) {
 }
 
 function processCoordinates(position) {
+    if (localStorage.getItem("latitude") === null || localStorage.getItem("longitude") === null) {
+        localStorage.setItem("latitude", position.coords.latitude);
+        localStorage.setItem("longitude", position.coords.longitude);
+    }
+
     var container = $("#container");
     var requestUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric&cnt=7&APPID=" + API_KEY;
 
@@ -101,7 +114,7 @@ function processWeatherData(weatherDataObject, position) {
     $.when(currentTempRequest).done(function() {
         weeklyData[0].currentTemp = Math.round(currentTempRequest.responseJSON.main.temp);
 
-        console.log(weeklyData);
+        //console.log(weeklyData);
         outputForecast(weeklyData);
     });
 }

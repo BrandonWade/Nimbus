@@ -1,28 +1,116 @@
 html {
   height: 100%;
+  animation-fill-mode: forwards;
+
+  body {
+    height: 100%;
+    margin: 0;
+    font: 0.9em "Lucida Grande", Helvetica, Arial, sans-serif;
+    text-align: center;
+    background-color: #191919;
+    color: #ffffff;
+    //background: linear-gradient(to bottom, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); // Clear Skies
+    //background: linear-gradient(to bottom, #a3e6ff 0%, #afe5ff 30%, #d7d7d7 125%); // Snow
+    //background: linear-gradient(to bottom, #ddddf5 0%, #999999 60%, #596a70 100%); // Cloudy
+    //background: linear-gradient(to bottom, #00002a 0%, #200040 80%, #330053 100%); // Thunderstorm
+    //background: linear-gradient(to bottom, #93cede 0%, #75bdd1 41%, #49a5bf 100%); // Drizzle
+    //background: linear-gradient(to bottom, #3e8ebc 0%, #0082aa 25%, #5562a3 90%); // Rain
+    //background-repeat: no-repeat;
+    //background-attachment: fixed;
+
+    a {
+      color: #dfdfdf;
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
 }
 
-body {
-  height: 100%;
-  margin: 0;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  text-align: center;
-  background-color: #191919;
-  color: #ffffff;
-  //background: linear-gradient(to bottom, #87e0fd 0%, #53cbf1 40%, #05abe0 100%); // Clear Skies
-  //background: linear-gradient(to bottom, #a3e6ff 0%, #afe5ff 30%, #d7d7d7 125%); // Snow
-  //background: linear-gradient(to bottom, #ddddf5 0%, #999999 60%, #596a70 100%); // Cloudy
-  //background: linear-gradient(to bottom, #00002a 0%, #200040 80%, #330053 100%); // Thunderstorm
-  //background: linear-gradient(to bottom, #93cede 0%, #75bdd1 41%, #49a5bf 100%); // Drizzle
-  //background: linear-gradient(to bottom, #3e8ebc 0%, #0082aa 25%, #5562a3 90%); // Rain
-  //background-repeat: no-repeat;
-  //background-attachment: fixed;
+// Container for config drop down
+div#configContainer {
+  padding-top: 15px;
+  padding-right: 15px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5em;
+
+  // Container for button + menu
+  div#configDropdown {
+    position: relative;
+    display: inline-block;
+
+    // TODO: Find a better solution for this?
+    width: 250px;
+    height: 62px;
+
+    &:hover {
+      ul#configMenu {
+        display: block;
+      }
+    }
+
+    ul#configMenu {
+      position: absolute;
+      top: 100%;
+      display: none;
+      margin: 0;
+      list-style: none;
+      width: 100%;
+      padding: 0;
+    }
+
+    a {
+      display: block;
+      text-decoration: none;
+    }
+
+    li {
+      background: rgba(75, 75, 75, 0.65);
+      text-align: left;
+
+      &:hover {
+        background: rgba(40, 40, 40, 0.65);
+      }
+    }
+  }
+
+  div#configButton {
+    width: 25%;
+    height: 25%;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    &:hover {
+      img {
+        animation: spin 7s linear infinite;
+      }
+    }
+  }
+
+  ul#configMenu {
+    border-radius: 3px;
+    border: 2px solid #3A3A3A;
+    border-collapse: collapse;
+
+    li {
+      border-top: 2px solid #3A3A3A;
+
+      &:first-child {
+        border-top: none;
+      }
+
+      a {
+        padding: 10px 30px;
+      }
+    }
+  }
 }
 
-a {
-  color: #00B7FF;
-}
-
+// Container for weather data
 div#weatherContainer {
   display: none;
   margin-left: auto;
@@ -54,6 +142,8 @@ div#weatherContainer {
   }
 }
 
-img {
-  max-width: 100%;
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
