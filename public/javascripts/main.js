@@ -114,7 +114,6 @@ function processWeatherData(weatherDataObject, position) {
     $.when(currentTempRequest).done(function() {
         weeklyData[0].currentTemp = Math.round(currentTempRequest.responseJSON.main.temp);
 
-        //console.log(weeklyData);
         outputForecast(weeklyData);
     });
 }
@@ -147,7 +146,27 @@ function getSkyConditions(weatherData) {
             skyConditions = {description: "Snow", icon: "snow.png", background: background};
             break;
         case "7" : // Code is in 7XX range
-            // Atmosphere
+            if (weatherCode == "701") {
+                // Mist
+            } else if (weatherCode == "711") {
+                // Smoke
+            } else if (weatherCode == "721") {
+                // Haze
+            } else if (weatherCode == "731") {
+                // Sand / Dust whirls
+            } else if (weatherCode == "741") {
+                // Fog
+            } else if (weatherCode == "751") {
+                // Sand
+            } else if (weatherCode == "761") {
+                // Dust
+            } else if (weatherCode == "762") {
+                // Volcanic Ash
+            } else if (weatherCode == "771") {
+                // Squalls
+            } else if (weatherCode == "781") {
+                // Tornado
+            }
             break;
         case "8" : // Code is in 8XX range
             if (weatherCode == "800") {
@@ -159,7 +178,21 @@ function getSkyConditions(weatherData) {
             }
             break;
         case "9" : // Code is in 9XX range
-            // Other / Extreme
+            if (weatherCode == "900") {
+                // Tornado
+            } else if (weatherCode == "901") {
+                // Tropical Storm
+            } else if (weatherCode == "902") {
+                // Hurricane
+            } else if (weatherCode == "903") {
+                // Cold
+            } else if (weatherCode == "904") {
+                // Hot
+            } else if (weatherCode == "905") {
+                // Windy
+            } else if (weatherCode == "906") {
+                // Hail
+            }
             break;
         default :
             skyConditions = null;
@@ -193,14 +226,34 @@ function outputForecast(weeklyData) {
         'background-attachment' : 'fixed'
     });
 
-    currentTemp.append("<div>" + weeklyData[0].currentTemp + "&deg;</div>");
-    currentCondition.append("<div>" + weeklyData[0].conditionText + "</div>");
+    var currentTempDataDiv = document.createElement("div");
+    currentTempDataDiv.innerHTML = weeklyData[0].currentTemp + "&deg;";
+    currentTemp.append(currentTempDataDiv);
+
+    var currentConditionDataDiv = document.createElement("div");
+    currentConditionDataDiv.innerHTML = weeklyData[0].conditionText;
+    currentCondition.append(currentConditionDataDiv);
 
     for (var i = 1; i < weeklyData.length; i++) {
-        forecastList.append("<li><div>" + weeklyData[i].weekday +
-                            "</div><div>" + "<img src=\"" + weeklyData[i].conditionIcon + "\" title=\"" + weeklyData[i].conditionText + "\">" +
-                            "</div><div>" + weeklyData[i].maxTemperature + "&deg;" +
-                                " / " + weeklyData[i].minTemperature + "&deg;</div></li>");
+        var weekdayDiv = document.createElement("div");
+        var weekdayDivText = document.createTextNode(weeklyData[i].weekday);
+        weekdayDiv.appendChild(weekdayDivText);
+
+        var conditionIconDiv = document.createElement("div");
+        var conditionIconImg = document.createElement("img");
+        conditionIconImg.setAttribute("src", weeklyData[i].conditionIcon);
+        conditionIconImg.setAttribute("title", weeklyData[i].conditionText);
+        conditionIconDiv.appendChild(conditionIconImg);
+
+        var temperatureDiv = document.createElement("div");
+        temperatureDiv.innerHTML = weeklyData[i].maxTemperature + "&deg;" + " / " + weeklyData[i].minTemperature + "&deg;";
+
+        var listItem = document.createElement("li");
+        listItem.appendChild(weekdayDiv);
+        listItem.appendChild(conditionIconDiv);
+        listItem.appendChild(temperatureDiv);
+
+        forecastList.append(listItem);
     }
 
     $("#forecastListContainer").append(forecastList);
