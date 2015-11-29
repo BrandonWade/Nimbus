@@ -86,7 +86,7 @@ div#configContainer {
 
     &:hover {
       img {
-        animation: spin 7s linear infinite;
+        animation: spinAnimation 7s linear infinite;
       }
     }
   }
@@ -131,6 +131,14 @@ div#weatherContainer {
         font-size: 3em;
       }
     }
+
+    div.fade {
+      animation: fadeAnimation 6s linear;
+    }
+
+    div.hidden {
+      display: none;
+    }
   }
 
   div#currentTemp div {
@@ -142,8 +150,22 @@ div#weatherContainer {
   }
 }
 
-@keyframes spin {
+@keyframes spinAnimation {
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeAnimation {
+  75% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
