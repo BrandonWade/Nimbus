@@ -60,11 +60,11 @@ function outputForecast(weeklyData) {
         conditionIconDiv.appendChild(conditionIconImg);
 
         var maxTemperatureDiv = document.createElement("div");
-        maxTemperatureDiv.setAttribute("class", "fade");
+        maxTemperatureDiv.setAttribute("title", "High of " + weeklyData[i].maxTemperature + "°");
         maxTemperatureDiv.innerHTML = weeklyData[i].maxTemperature + "&deg;";
 
         var minTemperatureDiv = document.createElement("div");
-        //minTemperatureDiv.setAttribute("class", "hidden");
+        minTemperatureDiv.setAttribute("title", "Low of " + weeklyData[i].minTemperature + "°");
         minTemperatureDiv.innerHTML = weeklyData[i].minTemperature + "&deg;";
 
         var listItem = document.createElement("li");
@@ -93,11 +93,3 @@ function buildGradientString(hexValues) {
 
     return 'linear-gradient(to bottom, ' + gradientString + ')';
 }
-
-//$(document).ready(function() {
-//    $(".fade").on("animationend", function() {
-//        //$(this).removeClass("fade").addClass("hidden");
-//        //alert("END");
-//        console.log("end");
-//    });
-//});
