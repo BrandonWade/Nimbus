@@ -18,7 +18,6 @@ function getUserCoordinates() {
             url: 'http://localhost:3000/weather',
             data: { latitude: latitude, longitude: longitude },
             success: function(weeklyData) {
-                //console.log(weeklyData);
                 outputForecast(weeklyData);
             },
             failure: function() {
