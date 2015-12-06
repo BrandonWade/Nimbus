@@ -137,13 +137,7 @@ function getDaylightStatus(sys) {
   var timeOfSunset = new Date(sys.sunset * 1000);
   var currentTime = new Date();
 
-  // Check if current time is after sunrise and before sunset
-  return (currentTime.getHours() <= timeOfSunset.getHours() &&
-          currentTime.getMinutes() <= timeOfSunset.getMinutes() &&
-          currentTime.getSeconds() <= timeOfSunset.getSeconds() &&
-          currentTime.getHours() >= timeOfSunrise.getHours() &&
-          currentTime.getMinutes() >= timeOfSunrise.getMinutes() &&
-          currentTime.getSeconds() >= timeOfSunrise.getSeconds());
+  return ((currentTime.getTime() >= timeOfSunrise.getTime()) && (currentTime.getTime() < timeOfSunset.getTime()));
 }
 
 function getSkyConditions(weatherData, isDaytime) {
