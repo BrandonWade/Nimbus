@@ -44,7 +44,7 @@ function getApiKey(confStrings) {
 }
 
 function processCoordinates(latitude, longitude, res) {
-  // Retrieve the weather data for the week
+  // Parameters for the weekly weather data
   var options = {
     method: 'GET',
     host: 'api.openweathermap.org',
@@ -52,6 +52,7 @@ function processCoordinates(latitude, longitude, res) {
     path: '/data/2.5/forecast/daily?lat=' + latitude + '&lon=' + longitude + '&units=metric&cnt=7&APPID=' + API_KEY
   };
 
+  // Retrieve the weather data for the week
   var data = "";
   var request = http.request(options, function(response) {
     response.setEncoding('utf8');
@@ -70,9 +71,9 @@ function processCoordinates(latitude, longitude, res) {
 }
 
 function processWeatherData(weatherDataObject, latitude, longitude, res) {
-  var WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var WEEKDAY_NAMES = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ];
   var weatherDataArray = weatherDataObject.list;
-  var weeklyData = [];
+  var weeklyData = [ ];
   var date = null;
   var weekday = "";
   var conditionText = "";
@@ -81,37 +82,15 @@ function processWeatherData(weatherDataObject, latitude, longitude, res) {
   var maxTemperature = 0;
   var minTemperature = 0;
 
-  // View the raw weather data
-  //console.log(weatherDataArray);
-
-  for (var i = 0; i < weatherDataArray.length; i++) {
-    var rawDailyData = weatherDataArray[i];
-    var skyConditions = getSkyConditions(weatherDataArray[i]);
-    date = new Date(rawDailyData.dt * 1000);
-    weekday = WEEKDAY_NAMES[date.getDay()];
-    conditionText = skyConditions.description;
-    conditionIcon = "/images/" + skyConditions.icon;
-    background = skyConditions.background;
-    maxTemperature = Math.round(rawDailyData.temp.max);
-    minTemperature = Math.round(rawDailyData.temp.min);
-
-    var formattedDailyData = { weekday: weekday,
-      conditionText: conditionText,
-      conditionIcon: conditionIcon,
-      background: background,
-      maxTemperature: maxTemperature,
-      minTemperature: minTemperature };
-
-    weeklyData.push(formattedDailyData);
-  }
-
+  // Parameters for the current weather data
   var options = {
     method: 'GET',
     host: 'api.openweathermap.org',
     port: 80,
-    path: '/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&units=metric&cnt=7&APPID=' + API_KEY
+    path: '/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&units=metric&APPID=' + API_KEY
   };
 
+  // Retrieve the current weather data
   var data = "";
   var request = http.request(options, function(response){
     response.setEncoding('utf8');
@@ -122,6 +101,29 @@ function processWeatherData(weatherDataObject, latitude, longitude, res) {
 
     response.on('end', function() {
       var currentWeatherDataObject = JSON.parse(data);
+      var isDaytime = getDaylightStatus(currentWeatherDataObject.sys);
+
+      for (var i = 0; i < weatherDataArray.length; i++) {
+        var rawDailyData = weatherDataArray[i];
+        var skyConditions = getSkyConditions(weatherDataArray[i], isDaytime);
+        date = new Date(rawDailyData.dt * 1000);
+        weekday = WEEKDAY_NAMES[date.getDay()];
+        conditionText = skyConditions.description;
+        conditionIcon = "/images/" + skyConditions.icon;
+        background = skyConditions.background;
+        maxTemperature = Math.round(rawDailyData.temp.max);
+        minTemperature = Math.round(rawDailyData.temp.min);
+
+        var formattedDailyData = { weekday: weekday,
+          conditionText: conditionText,
+          conditionIcon: conditionIcon,
+          background: background,
+          maxTemperature: maxTemperature,
+          minTemperature: minTemperature };
+
+        weeklyData.push(formattedDailyData);
+      }
+
       weeklyData[0].currentTemp = Math.round(currentWeatherDataObject.main.temp);
       res.send(weeklyData);
     });
@@ -130,11 +132,26 @@ function processWeatherData(weatherDataObject, latitude, longitude, res) {
   request.end();
 }
 
-function getSkyConditions(weatherData) {
+function getDaylightStatus(sys) {
+  var timeOfSunrise = new Date(sys.sunrise * 1000);
+  var timeOfSunset = new Date(sys.sunset * 1000);
+  var currentTime = new Date();
+
+  // Check if current time is after sunrise and before sunset
+  return (currentTime.getHours() <= timeOfSunset.getHours() &&
+          currentTime.getMinutes() <= timeOfSunset.getMinutes() &&
+          currentTime.getSeconds() <= timeOfSunset.getSeconds() &&
+          currentTime.getHours() >= timeOfSunrise.getHours() &&
+          currentTime.getMinutes() >= timeOfSunrise.getMinutes() &&
+          currentTime.getSeconds() >= timeOfSunrise.getSeconds());
+}
+
+function getSkyConditions(weatherData, isDaytime) {
   var weatherCode = String(weatherData.weather[0].id);
   var weatherCodePrefix = "";
   var background = null;
   var skyConditions = null;
+  var icon = null;
 
   if (weatherCode.length > 0) {
     weatherCodePrefix = weatherCode.substr(0, 1);
@@ -159,29 +176,37 @@ function getSkyConditions(weatherData) {
       break;
     case "7" : // Code is in 7XX range
       if (weatherCode == "701") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#9ac9d6", "0%"], ["#a1dbff", "25%"], ["#84a2c9", "90%"] ];
-        skyConditions = { description: "Mist", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Mist", icon: icon, background: background };
       } else if (weatherCode == "711") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Smoke", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Smoke", icon: icon, background: background };
       } else if (weatherCode == "721") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Haze", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Haze", icon: icon, background: background };
       } else if (weatherCode == "731") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Sand / Dust Whirls", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Sand / Dust Whirls", icon: icon, background: background };
       } else if (weatherCode == "741") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#9ac9d6", "0%"], ["#a1dbff", "25%"], ["#84a2c9", "90%"] ];
-        skyConditions = { description: "Fog", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Fog", icon: icon, background: background };
       } else if (weatherCode == "751") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Sand", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Sand", icon: icon, background: background };
       } else if (weatherCode == "761") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Dust", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Dust", icon: icon, background: background };
       } else if (weatherCode == "762") {
+        icon = isDaytime ? "atmospheric_day.png" : "atmospheric_night.png";
         background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
-        skyConditions = { description: "Volcanic Ash", icon: "atmospheric.png", background: background };
+        skyConditions = { description: "Volcanic Ash", icon: icon, background: background };
       } else if (weatherCode == "771") {
         background = [ ["#3e8ebc", "0%"], ["#0082aa", "25%"], ["#5562a3", "90%"] ];
         skyConditions = { description: "Squalls", icon: "rain.png", background: background };
@@ -192,8 +217,9 @@ function getSkyConditions(weatherData) {
       break;
     case "8" : // Code is in 8XX range
       if (weatherCode == "800") {
+        icon = isDaytime ? "clear_day.png" : "clear_night.png";
         background = [ ["#87e0fd", "0%"], ["#53cbf1", "40%"], ["#05abe0", "100%"] ];
-        skyConditions = { description: "Clear Skies", icon: "clear_day.png", background: background }
+        skyConditions = { description: "Clear Skies", icon: icon, background: background }
       } else {
         background = [ ["#ddddf5", "0%"], ["#999999", "60%"], ["#596a70", "100%"] ];
         skyConditions = { description: "Cloudy", icon: "cloudy.png", background: background };
