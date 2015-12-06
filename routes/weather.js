@@ -142,68 +142,85 @@ function getSkyConditions(weatherData) {
 
   switch (weatherCodePrefix) {
     case "2" : // Code is in 2XX range
-      background = [["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"]];
-      skyConditions = {description: "Thunderstorm", icon: "thunderstorm.png", background: background};
+      background = [ ["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"] ];
+      skyConditions = { description: "Thunderstorm", icon: "thunderstorm.png", background: background };
       break;
     case "3" : // Code is in 3XX range
-      background = [["#93cede", "0%"], ["#75bdd1", "41%"], ["#49a5bf", "100%"]];
-      skyConditions = {description: "Drizzle", icon: "rain.png", background: background};
+      background = [ ["#93cede", "0%"], ["#75bdd1", "41%"], ["#49a5bf", "100%"] ];
+      skyConditions = { description: "Drizzle", icon: "rain.png", background: background };
       break;
     case "5" : // Code is in 5XX range
-      background = [["#3e8ebc", "0%"], ["#0082aa", "25%"], ["#5562a3", "90%"]];
-      skyConditions = {description: "Rain", icon: "rain.png", background: background};
+      background = [ ["#3e8ebc", "0%"], ["#0082aa", "25%"], ["#5562a3", "90%"] ];
+      skyConditions = { description: "Rain", icon: "rain.png", background: background };
       break;
     case "6" : // Code is in 6XX range
-      background = [["#a3e6ff", "0%"], ["#afe5ff", "30%"], ["#d7d7d7", "125%"]];
-      skyConditions = {description: "Snow", icon: "snow.png", background: background};
+      background = [ ["#a3e6ff", "0%"], ["#afe5ff", "30%"], ["#d7d7d7", "125%"] ];
+      skyConditions = { description: "Snow", icon: "snow.png", background: background };
       break;
     case "7" : // Code is in 7XX range
       if (weatherCode == "701") {
-        // Mist
+        background = [ ["#9ac9d6", "0%"], ["#a1dbff", "25%"], ["#84a2c9", "90%"] ];
+        skyConditions = { description: "Mist", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "711") {
-        // Smoke
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Smoke", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "721") {
-        // Haze
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Haze", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "731") {
-        // Sand / Dust whirls
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Sand / Dust Whirls", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "741") {
-        // Fog
+        background = [ ["#9ac9d6", "0%"], ["#a1dbff", "25%"], ["#84a2c9", "90%"] ];
+        skyConditions = { description: "Fog", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "751") {
-        // Sand
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Sand", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "761") {
-        // Dust
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Dust", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "762") {
-        // Volcanic Ash
+        background = [ ["#d3d1c4", "0%"], ["#aaa77c", "25%"], ["#3d3d3d", "90%"] ];
+        skyConditions = { description: "Volcanic Ash", icon: "atmospheric.png", background: background };
       } else if (weatherCode == "771") {
-        // Squalls
+        background = [ ["#3e8ebc", "0%"], ["#0082aa", "25%"], ["#5562a3", "90%"] ];
+        skyConditions = { description: "Squalls", icon: "rain.png", background: background };
       } else if (weatherCode == "781") {
-        // Tornado
+        background = [ ["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"] ];
+        skyConditions = { description: "Tornado", icon: "extreme.png", background: background };
       }
       break;
     case "8" : // Code is in 8XX range
       if (weatherCode == "800") {
-        background = [["#87e0fd", "0%"], ["#53cbf1", "40%"], ["#05abe0", "100%"]];
-        skyConditions = {description: "Clear Skies", icon: "clear_day.png", background: background}
+        background = [ ["#87e0fd", "0%"], ["#53cbf1", "40%"], ["#05abe0", "100%"] ];
+        skyConditions = { description: "Clear Skies", icon: "clear_day.png", background: background }
       } else {
-        background = [["#ddddf5", "0%"], ["#999999", "60%"], ["#596a70", "100%"]];
-        skyConditions = {description: "Cloudy", icon: "cloudy.png", background: background};
+        background = [ ["#ddddf5", "0%"], ["#999999", "60%"], ["#596a70", "100%"] ];
+        skyConditions = { description: "Cloudy", icon: "cloudy.png", background: background };
       }
       break;
     case "9" : // Code is in 9XX range
       if (weatherCode == "900") {
-        // Tornado
+        background = [ ["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"] ];
+        skyConditions = { description: "Tornado", icon: "extreme.png", background: background };
       } else if (weatherCode == "901") {
-        // Tropical Storm
+        background = [ ["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"] ];
+        skyConditions = { description: "Tropical Storm", icon: "extreme.png", background: background };
       } else if (weatherCode == "902") {
-        // Hurricane
+        background = [ ["#00002a", "0%"], ["#200040", "40%"], ["#330053", "100%"] ];
+        skyConditions = { description: "Hurricane", icon: "extreme.png", background: background };
       } else if (weatherCode == "903") {
-        // Cold
+        background = [ ["#0A003A", "0%"], ["#000172", "40%"], ["#0063E5", "100%"] ];
+        skyConditions = { description: "Extreme Cold", icon: "extreme.png", background: background };
       } else if (weatherCode == "904") {
-        // Hot
+        background = [ ["#840000", "0%"], ["#A53A00", "40%"], ["#E08200", "100%"] ];
+        skyConditions = { description: "Extreme Heat", icon: "extreme.png", background: background };
       } else if (weatherCode == "905") {
-        // Windy
+        background = [ ["#62788C", "0%"], ["#90A3AF", "35%"], ["#C0D0D8", "100%"] ];
+        skyConditions = { description: "High Winds", icon: "extreme.png", background: background };
       } else if (weatherCode == "906") {
-        // Hail
+        background = [ ["#0A003A", "0%"], ["#000172", "40%"], ["#0063E5", "100%"] ];
+        skyConditions = { description: "Hail", icon: "extreme.png", background: background };
       }
       break;
     default :
