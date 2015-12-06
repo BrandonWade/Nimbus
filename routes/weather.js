@@ -12,9 +12,15 @@ router.get('/', function(req, res, next) {
       return console.log(error);
     }
 
-    // Read the api key from a conf file
-    API_KEY = getApiKey(data);
-    processCoordinates(req.query.latitude, req.query.longitude, res);
+    if (req.query.latitude && req.query.longitude) {
+      // Read the api key from a conf file
+      API_KEY = getApiKey(data);
+      processCoordinates(req.query.latitude, req.query.longitude, res);
+    } else {
+      var err = new Error('Not Found');
+      err.status = 404;
+      next(err);
+    }
   });
 });
 
