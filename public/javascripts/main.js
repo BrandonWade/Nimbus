@@ -4,7 +4,9 @@
 function getUserCoordinates() {
     if ((localStorage.getItem("latitude") === null) || (localStorage.getItem("longitude") === null)) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(processCoordinates);
+            navigator.geolocation.getCurrentPosition(function (position) {
+               makeDataRequest(position.coords.latitude, position.coords.longitude);
+            });
         } else {
             var container = $("#container");
             container.append("Your browser does not support geolocation. We were unable to retrieve your position.");
@@ -13,18 +15,22 @@ function getUserCoordinates() {
         var latitude = localStorage.getItem("latitude");
         var longitude = localStorage.getItem("longitude");
 
-        $.ajax({
-            type: 'GET',
-            url: 'http://localhost:3000/weather',
-            data: { latitude: latitude, longitude: longitude },
-            success: function(weeklyData) {
-                outputForecast(weeklyData);
-            },
-            failure: function() {
-                console.log('Error contacting server for weather data.');
-            }
-        });
+        makeDataRequest(latitude, longitude);
     }
+}
+
+function makeDataRequest(latitude, longitude) {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:3000/weather',
+        data: { latitude: latitude, longitude: longitude },
+        success: function(weeklyData) {
+            outputForecast(weeklyData);
+        },
+        failure: function() {
+            console.log('Error contacting server for weather data.');
+        }
+    });
 }
 
 function outputForecast(weeklyData) {
