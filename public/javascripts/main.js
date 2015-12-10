@@ -56,6 +56,7 @@ function outputForecast(weeklyData) {
     for (var i = 1; i < weeklyData.length; i++) {
         var weekdayDiv = document.createElement("div");
         var weekdayDivText = document.createTextNode(weeklyData[i].weekday);
+        weekdayDiv.setAttribute("class", "weekdayName");
         weekdayDiv.appendChild(weekdayDivText);
 
         var conditionIconDiv = document.createElement("div");
@@ -65,10 +66,12 @@ function outputForecast(weeklyData) {
         conditionIconDiv.appendChild(conditionIconImg);
 
         var maxTemperatureDiv = document.createElement("div");
+        maxTemperatureDiv.setAttribute("class", "weekdayTemp");
         maxTemperatureDiv.setAttribute("title", "High of " + weeklyData[i].maxTemperature + "°");
         maxTemperatureDiv.innerHTML = weeklyData[i].maxTemperature + "&deg;";
 
         var minTemperatureDiv = document.createElement("div");
+        minTemperatureDiv.setAttribute("class", "weekdayTemp");
         minTemperatureDiv.setAttribute("title", "Low of " + weeklyData[i].minTemperature + "°");
         minTemperatureDiv.innerHTML = weeklyData[i].minTemperature + "&deg;";
 

@@ -5,7 +5,7 @@ html {
   body {
     height: 100%;
     margin: 0;
-    font: 0.9em "Lucida Grande", Helvetica, Arial, sans-serif;
+    font: 0.7em "Lucida Grande", Helvetica, Arial, sans-serif;
     text-align: center;
     background-color: #191919;
     color: #ffffff;
@@ -48,8 +48,8 @@ div#configContainer {
     display: inline-block;
 
     // TODO: Find a better solution for this?
-    width: 250px;
-    height: 62px;
+    width: 200px;
+    height: 50px;
 
     &:hover {
       ul#configMenu {
@@ -83,8 +83,8 @@ div#configContainer {
   }
 
   div#configButton {
-    width: 25%;
-    height: 25%;
+    width: 20%;
+    height: 20%;
     position: absolute;
     top: 0;
     right: 0;
@@ -125,6 +125,7 @@ div#weatherContainer {
     margin: 0;
     padding: 0;
 
+
     li {
       display: inline-block;
       width: 10%;
@@ -132,18 +133,22 @@ div#weatherContainer {
       vertical-align: middle;
       margin: 10em 3em 0;
 
-      div {
+      div.weekdayName {
         font-size: 3em;
+      }
+
+      div.weekdayTemp {
+        font-size: 2.5em;
       }
     }
   }
 
   div#currentTemp div {
-    font-size: 20em;
+    font-size: 15em;
   }
 
   div#currentCondition {
-    font-size: 5em;
+    font-size: 3em;
   }
 }
 
