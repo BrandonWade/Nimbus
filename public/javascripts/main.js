@@ -5,7 +5,12 @@ function getUserCoordinates() {
     if ((localStorage.getItem("latitude") === null) || (localStorage.getItem("longitude") === null)) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-               makeDataRequest(position.coords.latitude, position.coords.longitude);
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                localStorage.setItem("latitude", latitude);
+                localStorage.setItem("longitude", longitude);
+                makeDataRequest(latitude, longitude);
             });
         } else {
             var container = $("#container");
@@ -101,3 +106,14 @@ function buildGradientString(hexValues) {
 
     return 'linear-gradient(to bottom, ' + gradientString + ')';
 }
+
+function resetLocation() {
+    localStorage.removeItem("latitude");
+    localStorage.removeItem("longitude");
+}
+
+$(window).on("load", function() {
+    $("#configButton").on("click", function() {
+        $("#configMenu").toggle();
+    });
+});
